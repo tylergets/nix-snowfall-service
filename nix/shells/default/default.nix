@@ -15,7 +15,5 @@
 mkShell {
   # Create your shell
   packages = with pkgs; [
-    bun
-    nodejs_latest
   ];
 }
