@@ -19,7 +19,7 @@ import Fastify from "fastify";
   // Run the server!
   try {
     await fastify.listen({
-      port: 3000,
+      port: parseInt(process.env.PORT ?? "3000"),
       host: "0.0.0.0",
     });
   } catch (err) {
