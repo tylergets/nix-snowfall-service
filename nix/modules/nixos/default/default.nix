@@ -19,6 +19,7 @@
 }:
 with lib; let
   cfg = config.services.helloNixosTests;
+  configFile = pkgs.writeText "helloNixosTests-config.json" (builtins.toJSON cfg.config);
 in {
   #### Module Options
   options = {
@@ -42,13 +43,30 @@ in {
         default = 3000;
         description = "The port for helloNixosTests, passed via BUN_PORT.";
       };
+
+      config = lib.mkOption {
+        type = lib.types.attrs;
+        default = {};
+        description = ''
+          Configuration to pass to helloNixosTests, turned into JSON,
+          available at runtime in the Nix store via CONFIG_FILE.
+        '';
+      };
+
+      extraArgs = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        description = ''
+          Additional arguments to pass to helloNixosTests command.
+        '';
+      };
     };
   };
 
   #### Implementation
   config = mkIf cfg.enable {
     # Create the group. Adjust GID as needed or remove if you want to rely on dynamic assignment.
-    users.groups."${cfg.group}".gid = 1000;
+    users.groups."${cfg.group}" = {};
 
     # Create the user, referencing our newly added option values
     users.users."${cfg.user}" = {
@@ -66,7 +84,7 @@ in {
       wantedBy = ["multi-user.target"];
 
       script = ''
-        exec ${inputs.self.packages.${system}.default}/bin/hello-nixos-tests
+        exec ${inputs.self.packages.${system}.default}/bin/hello-nixos-tests ${lib.concatStringsSep " " cfg.extraArgs}
       '';
 
       serviceConfig = {
@@ -79,6 +97,7 @@ in {
         # Pass the port via BUN_PORT
         Environment = [
           "PORT=${toString cfg.port}"
+          "CONFIG_FILE=${configFile}"
         ];
       };
     };
