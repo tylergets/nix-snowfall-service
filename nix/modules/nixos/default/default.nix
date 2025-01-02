@@ -41,7 +41,7 @@ in {
       port = mkOption {
         type = types.int;
         default = 3000;
-        description = "The port for helloNixosTests, passed via BUN_PORT.";
+        description = "The port for helloNixosTests, passed via PORT.";
       };
 
       config = lib.mkOption {
@@ -94,7 +94,6 @@ in {
         Restart = "on-failure";
         RestartSec = "30s";
 
-        # Pass the port via BUN_PORT
         Environment = [
           "PORT=${toString cfg.port}"
           "CONFIG_FILE=${configFile}"
