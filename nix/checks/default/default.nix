@@ -36,19 +36,18 @@ pkgs.nixosTest {
     };
   };
 
-  skipLint = true;
-
   testScript = ''
+    server.wait_for_unit("default.target")
+
     server.wait_for_unit("helloNixosTests.service")
     server.wait_for_open_port(3000)
 
-    # expected = "test"
+    client.wait_for_unit("network.target")
 
-    # actual = client.succeed(
-    #   "${pkgs.curl}/bin/curl http://server:3000"
-    # )
+    actual = client.succeed("curl server:3000")
+    expected = "Fastify + Bun!"
 
-    # assert expected == actual, "table query returns expected content"
+    assert expected == actual, "table query returns expected content"
 
   '';
 }

@@ -11,7 +11,12 @@
   outputs = inputs:
     inputs.snowfall-lib.mkFlake {
       inherit inputs;
+
       src = ./.;
+
+      alias = {
+        packages.default = "hello-nixos-tests";
+      };
 
       # Configure Snowfall Lib, all of these settings are optional.
       snowfall = {
@@ -21,7 +26,7 @@
 
         # Choose a namespace to use for your flake's packages, library,
         # and overlays.
-        namespace = "my-namespace";
+        # namespace = "my-namespace";
 
         # Add flake metadata that can be processed by tools like Snowfall Frost.
         meta = {

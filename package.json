@@ -1,0 +1,17 @@
+{
+  "name": "nix-snowfall-service",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "build": "bun build --minify --bytecode --compile index.ts --outfile dist/node-test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "fastify": "^5.2.0"
+  }
+}
